@@ -30,29 +30,38 @@ const ll INF =  1e18;
 #define MV map<ll,vl>
 const int N=1e5;
 
-/*
-Given n coins and value w. how many ways we make w by using each coin at most once.
-*/
 
+ll f(int i, int w, vl &v,vector<vl>&dp )
+{
+    if(i==0)
+    {
+        return (w%v[i]==0);
+    }
+    if(dp[i][w]!=-1) return dp[i][w];
+    ll ans=0;
+    ans=f(i-1,w,v,dp);
+    if(w>=v[i]) ans+=f(i,w-v[i],v,dp);
+    return dp[i][w]=ans;
+}
 
 void solve()
 {
-    int n,w;
+    ll n,w;
     cin>>n>>w;
-    vector<int>v(n);
-    for(auto &it:v) cin>>it;
-    vector<vl>dp(n+1,vl (w+1,0));
-    for(int i=0; i<n; i++) dp[i][0]=1; // what will be the base case.
-    for(int i=1; i<=n; i++)  // kon jayga theke suru hobe? 
+    vl v(n);
+    taking(v);
+    vector<vl>dp(n+1,vl(w+1,0));
+    for(int  i=0; i<=n; i++) dp[i][0]=1;
+    for(int i=1; i<n; i++)
     {
-        for(int j=1; j<=w; j++)
-        {
-            dp[i][j]=dp[i-1][j];
-            if(j-v[i-1]>=0) dp[i][j]+=dp[i-1][j-v[i-1]]; // transition er upor base kore kon loop age hobe. 
-        }
+       for(int j=1;j<=w; j++)
+       {
+         dp[i][j]=dp[i-1][j];
+         if(j>=v[i]) dp[i][j]+=dp[i][j-v[i]];
+       }
     }
-    cout<<dp[n][w]<<'\n'; // final answer kothai thakbe. 
-
+    cout<<dp[n-1][w]<<'\n';
+    
 }
 
 
