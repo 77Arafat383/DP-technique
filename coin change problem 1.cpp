@@ -29,61 +29,30 @@ const ll INF =  1e18;
 #define Mp map<ll,ll>
 #define MV map<ll,vl>
 const int N=1e5;
+
 /*
-  Find maximum possible value of this expression after inserting paranthesis. -  included;
+Given n coins and value w. how many way we create w 
 */
 
-ll f(int b, int e, bool mx,string &str, vector<vector<vl>>&dp)
-{
-    if(b==e) return str[b]-'0';
-    if(dp[b][e][mx]!=-1) return dp[b][e][mx];
-    ll ans=INT_MIN;
-    if(!mx) ans=INT_MAX;
-    for(int i=b+1; i<e; i+=2)
-    {
-        if(mx)
-        {
-            if(str[i]=='*')
-            {
-                ans=max(ans,f(b,i-1,mx,str,dp)*f(i+1,e,mx,str,dp));
-            }
-            else if(str[i]=='+')
-            {
-                ans=max(ans,f(b,i-1,mx,str,dp)+f(i+1,e,mx,str,dp));
-            }
-            else
-            {
-                ans=max(ans,f(b,i-1,mx,str,dp)-f(i+1,e,0,str,dp));
-            }
-        }
-        else
-        {
-            if(str[i]=='*')
-            {
-                ans=min(ans,f(b,i-1,mx,str,dp)*f(i+1,e,mx,str,dp));
-            }
-            else if(str[i]=='+')
-            {
-                ans=min(ans,f(b,i-1,mx,str,dp)+f(i+1,e,mx,str,dp));
-            }
-            else
-            {
-                ans=min(ans,f(b,i-1,mx,str,dp)-f(i+1,e,1,str,dp));
-            }
-        }
-    }
-    return dp[b][e][mx]=ans;
-
-}
 
 void solve()
 {
-    string str;
-    cin>>str;
-    int n=si(str);
-    vector<vector<vl>>dp(n+1,vector<vl>(n+1,vl(2,-1)));
-    ll ans=f(0,n-1,1,str,dp);
-    cout<<ans<<'\n';
+    int n,w;
+    cin>>n>>w;
+    vector<int>v(n);
+    for(auto &it:v) cin>>it;
+    vector<vl>dp(n+1,vl (w+1,0));
+    for(int i=0; i<n; i++) dp[i][0]=1; // what will be the base case.
+    for(int i=1; i<=n; i++)  // kon jayga theke suru hobe? 
+    {
+        for(int j=1; j<=w; j++)
+        {
+            dp[i][j]=dp[i-1][j];
+            if(j-v[i-1]>=0) dp[i][j]+=dp[i-1][j-v[i-1]]; // transition er upor base kore kon loop age hobe. 
+        }
+    }
+    cout<<dp[n][w]<<'\n'; // final answer kothai thakbe. 
+
 }
 
 
